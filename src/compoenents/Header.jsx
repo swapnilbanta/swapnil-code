@@ -1,6 +1,6 @@
 // Header.jsx
 import React, { useState } from "react";
-import './Navigation.css';
+import '../common/Navigation.css';
 
 import logo from '../assets/logo.png';
 
