@@ -1,0 +1,99 @@
+/* Navbar base */
+.navbar-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #0d3a58;
+  padding: 10px 20px;
+  position: relative;
+  color: white;
+}
+
+/* Logo */
+.logo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.bonc span {
+  font-size: 26px;
+  font-weight: bold;
+}
+
+.tagline {
+  font-size: 10px;
+  margin: 0;
+  color: #ddd;
+}
+
+/* Nav links */
+.nav-links a {
+  text-decoration: none;
+  color: #2563eb;
+  font-weight: 500;
+  padding: 8px 0;
+  transition: color 0.2s;
+}
+
+
+/* Icons */
+.icons {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.bell {
+  position: relative;
+  font-size: 20px;
+  cursor: pointer;
+}
+.dot {
+  position: absolute;
+  top: -2px;
+  right: -4px;
+  height: 8px;
+  width: 8px;
+  background: red;
+  border-radius: 50%;
+}
+
+.avatar {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+}
+
+/* Mobile responsiveness */
+.menu-icon {
+  display: none;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .menu-icon {
+    display: block;
+  }
+
+  .nav-links {
+    position: absolute;
+    top: 60px;
+    left: -100%;
+    width: 100%;
+    background: #0d3a58;
+    flex-direction: column;
+    text-align: center;
+    transition: left 0.3s ease-in-out;
+    padding: 15px 0;
+  }
+
+  .nav-links.active {
+    left: 0;
+  }
+
+  .nav-links li {
+    margin: 10px 0;
+  }
+}
