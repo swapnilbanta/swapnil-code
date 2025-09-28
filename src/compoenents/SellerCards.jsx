@@ -1,5 +1,3 @@
-import React from "react";
-
 const SellerCards = ({ sellers }) => {
   return (
     <div className="sellers">

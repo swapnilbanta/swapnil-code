@@ -1,4 +1,3 @@
-// Dummy API simulation (can be replaced with real API later)
 import shirt1 from "../assets/shirt1.jpg";
 import shirt2 from "../assets/shirt2.jpg";
 import shirt3 from "../assets/shirt3.jpg";
