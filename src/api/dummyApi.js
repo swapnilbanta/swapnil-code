@@ -36,11 +36,11 @@ export const getProductDetails = () => {
 
 export const getSimilarProducts = () => {
   return Promise.resolve([
-    { id: 1, name: "Black Shirt", category: "Clothing", image: product1  },
-    { id: 2, name: "Jeans", category: "Clothing", image: product2 },
-    { id: 3, name: "Food", category: "Accessories", image: product3 },
-     { id: 4, name: "Jeans", category: "Clothing", image: product4 },
-        { id: 5, name: "Jeans", category: "Clothing", image: product5},
+    { id: 1, name: "Black Shirt", category: "Clothing", image: product2  },
+    { id: 2, name: "Jeans", category: "Clothing", image: product4},
+    { id: 3, name: "Food", category: "Accessories", image: product5 },
+     { id: 4, name: "Jeans", category: "Clothing", image: product3 },
+        { id: 5, name: "Jeans", category: "Clothing", image: product2},
            
   ]);
 };
