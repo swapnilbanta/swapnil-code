@@ -5,7 +5,7 @@ import ProductDetails from "./ProductDetails";
 import SimilarProducts from "./SimilarProducts";
 import SellerCards from "./SellerCards";
 import Header from "./Header";
-// import Breadcrumb from "./Breadcrumb";
+import Breadcrumb from "./Breadcrumb";
 
 
 const ProductOverview = () => {
@@ -25,10 +25,11 @@ const ProductOverview = () => {
     <>
     <Header/>
     <div className="container">
+        <Breadcrumb/>
       <div className="product-header">
 
 
-        {/* <Breadcrumb/> */}
+
         <ProductGallery images={product.images} />
         <ProductDetails product={product} />
       </div>
