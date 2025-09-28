@@ -27,15 +27,24 @@
   color: #ddd;
 }
 
-/* Nav links */
+/* Nav links (desktop default) */
+.nav-links {
+  display: flex;
+  gap: 20px;
+  list-style: none;
+}
+
 .nav-links a {
   text-decoration: none;
-  color: #2563eb;
+  color: #00c3ff;
   font-weight: 500;
-  padding: 8px 0;
+  padding: 8px 12px;
   transition: color 0.2s;
 }
 
+.nav-links a:hover {
+  color: #00c3ff;
+}
 
 /* Icons */
 .icons {
@@ -49,6 +58,7 @@
   font-size: 20px;
   cursor: pointer;
 }
+
 .dot {
   position: absolute;
   top: -2px;
@@ -65,13 +75,15 @@
   border-radius: 50%;
 }
 
-/* Mobile responsiveness */
+/* Menu Icon (hidden on desktop) */
 .menu-icon {
   display: none;
-  font-size: 24px;
+  font-size: 26px;
   cursor: pointer;
+  color: white;
 }
 
+/* Mobile responsiveness */
 @media (max-width: 768px) {
   .menu-icon {
     display: block;
@@ -80,17 +92,18 @@
   .nav-links {
     position: absolute;
     top: 60px;
-    left: -100%;
+    left: 0;
     width: 100%;
     background: #0d3a58;
     flex-direction: column;
     text-align: center;
-    transition: left 0.3s ease-in-out;
-    padding: 15px 0;
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.3s ease-in-out;
   }
 
   .nav-links.active {
-    left: 0;
+    max-height: 500px; /* large enough to fit all links */
   }
 
   .nav-links li {

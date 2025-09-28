@@ -1,7 +1,6 @@
 // Header.jsx
 import React, { useState } from "react";
 import '../common/Navigation.css';
-
 import logo from '../assets/logo.png';
 
 const Header = () => {
@@ -10,7 +9,6 @@ const Header = () => {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    // Implement search functionality
     console.log("Searching for:", searchQuery);
   };
 
@@ -27,7 +25,7 @@ const Header = () => {
             List Your Business
           </button>
           <button className="auth-btn" aria-label="Sign in or sign up">
-            Sign In / Sign Up
+            Sign In / Sign Up {"->]"}
           </button>
           <button className="help-btn" aria-label="Get help">
             Need Help?
@@ -51,14 +49,17 @@ const Header = () => {
           ☰
         </button>
 
+        {/* Nav Links - FIXED STRUCTURE */}
         <ul className={`nav-links ${menuOpen ? "open" : ""}`}>
-          <li><a href="/about">About US</a></li>
+          {/* Individual list items instead of groups */}
+          <li><a href="/">About Us</a></li>
           <li><a href="/">Products Listing</a></li>
           <li><a href="/" className="active">Service</a></li>
           <li><a href="/">Categories</a></li>
           <li><a href="/">Contact</a></li>
         </ul>
 
+        {/* Search Section */}
         <div className="search-section">
           <input 
             type="text" 
@@ -70,7 +71,7 @@ const Header = () => {
             placeholder="📂 Category" 
             aria-label="Category"
           />
-          <form className="search-box" onSubmit={handleSearch}>
+    
             <input 
               type="text" 
               placeholder="Search Product/ Business" 
@@ -81,7 +82,6 @@ const Header = () => {
             <button type="submit" className="search-btn" aria-label="Search">
               🔍
             </button>
-          </form>
         </div>
       </nav>
     </header>

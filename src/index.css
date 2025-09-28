@@ -30,8 +30,9 @@ body {
 .details h2,
 .details p {
   text-align: left;
-  margin: 0 0 8px; /* optional spacing */
+  margin: 0 0 8px;
 }
+
 .thumbnails {
   display: flex;
   flex-direction: column;
@@ -67,14 +68,10 @@ body {
 
 /* ---------- VERIFIED ---------- */
 .verified {
-  color: green;
-  font-weight: bold;
   display: block;
-  width: 100%;         /* take full row */
-  text-align: right;   /* push text to right */
-  margin: 0 0 8px;
+  width: 100%;
+  text-align: right;
 }
-
 
 /* ---------- QUOTE BUTTON ---------- */
 .quote-btn {
@@ -82,7 +79,7 @@ body {
   color: white;
   border: none;
   padding: 10px 20px;
-  margin: 10px 0 20px;
+  margin: 20px 0 30px;
   cursor: pointer;
   border-radius: 5px;
   display: inline-block;
@@ -111,29 +108,50 @@ body {
 }
 
 .similar-card {
-  padding: 15px;
-
+  padding: 0 20px;
   text-align: center;
- padding: 0 20px;
 }
+
 .similar-slider .slick-track {
-  display: flex !important;       /* keep slides in one row */
+  display: flex !important;
 }
 
 .similar-slider .slick-slide {
-  height: auto;                   /* prevent stretching */
-  padding: 0 8px;                 /* small horizontal gap */
+  height: auto;
+  padding: 0 8px;
 }
 
 .similar-slider .slick-list {
-  margin: 0 -8px;                 /* cancel padding offset */
+  margin: 0 -8px;
 }
 
-
+/* Fixed responsive image styles */
 .similar-card img {
-  width:100%;
+  width: 100%;
   height: 220px;
-  border-radius:20px;
+  object-fit: cover; /* use "contain" if you want full image */
+  border-radius: 20px;
+}
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .similar-card img {
+    height: 200px;
+  }
+}
+
+/* Mobile landscape */
+@media (max-width: 768px) {
+  .similar-card img {
+    height: 180px;
+  }
+}
+
+/* Mobile portrait */
+@media (max-width: 480px) {
+  .similar-card img {
+    height: 160px;
+  }
 }
 
 .product-name {
@@ -164,41 +182,11 @@ body {
   transform: scale(1.05);
 }
 
-
-.product-name {
-  margin: 10px 0 5px;
-  font-weight: bold;
-  font-size: 14px;
-}
-
-.product-category {
-  color: #555;
-  font-size: 12px;
-}
-
-.more-btn {
-  background: #e6f0ff;
-  border: 1px solid #b3d1ff;
-  color: #007bff;
-  cursor: pointer;
-  margin-top: 10px;
-  font-size: 13px;
-  padding: 6px 14px;
-  border-radius: 5px;
-  transition: background 0.3s ease, transform 0.2s ease;
-}
-
-.more-btn:hover {
-  background: #d0e3ff;
-  transform: scale(1.05);
-}
-
-/* ---------- SELLERS (OPTIONAL) ---------- */
-/* ---------- SELLERS SECTION ---------- */
 /* ---------- SELLERS SECTION ---------- */
 .sellers {
   margin-top: 40px;
-  height:100%;
+  height: 100%;
+  
 }
 
 .sellers h3 {
@@ -207,13 +195,12 @@ body {
   margin-bottom: 20px;
 }
 
-/* seller list - horizontal row with scroll if needed */
+/* seller list */
 .seller-list {
   display: flex;
   gap: 20px;
-  flex-wrap: nowrap;       /* keep in one row */
-  overflow-x: auto;        /* enable horizontal scroll */
- 
+  flex-wrap: nowrap;
+  overflow-x: auto;
   scrollbar-width: thin;
 }
 
@@ -232,12 +219,12 @@ body {
   border-radius: 12px;
   text-align: center;
   min-width: 220px;
-  flex: 0 0 auto;          /* prevent shrinking */
+  flex: 0 0 auto;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-  overflow: hidden;        /* clip content */
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  height: 260px;           /* fixed card height */
+  height: 260px;
 }
 
 .seller-card:hover {
@@ -248,23 +235,21 @@ body {
 /* ---------- LOGO HALF ---------- */
 .seller-logo {
   flex: 1;
-
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 50%;              /* ensure half of card */
+  height: 50%;
 }
 
 .seller-logo img {
   max-width: 100%;
   max-height: 100%;
-  width:100%;
-  /* object-fit: contain; */
+  width: 100%;
 }
 
 .seller-info {
   flex: 1;
-  height: 50%;             
+  height: 50%;
   padding: 12px;
   display: flex;
   flex-direction: column;
@@ -316,7 +301,6 @@ body {
   }
 }
 
-
 /* ---------- VERIFIED BADGE ---------- */
 .verified {
   display: inline-flex;
@@ -334,8 +318,7 @@ body {
   color: #008a4c;
 }
 
-
-/* ---------- RESPONSIVE ---------- */
+/* ---------- RESPONSIVE FOR PRODUCT HEADER & CARDS ---------- */
 @media (max-width: 1024px) {
   .product-header {
     flex-direction: column;
@@ -383,5 +366,9 @@ body {
 
 /* ---------- SUPPLIER LABEL ---------- */
 .supplier {
+  color: #007bff;
+}
+
+.supply {
   color: #007bff;
 }

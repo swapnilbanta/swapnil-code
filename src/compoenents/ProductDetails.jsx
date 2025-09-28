@@ -8,7 +8,7 @@ const ProductDetails = ({ product }) => {
   <div className="details">
     
       <h2>{product.company}</h2>
-      <p >{product.supplier}</p>
+      <p className="supply" >{product.supplier}</p>
 
       {product.verified && <div className="verified"> Verified</div>}
       <br></br>

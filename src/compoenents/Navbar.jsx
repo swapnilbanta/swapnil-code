@@ -1,21 +1,23 @@
 import React, { useState } from "react";
 import "../common/Navbar.css";
-
-import logo from '../assets/logo.png';
+import logo from "../assets/logo.png";
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <nav className="navbar-container">
+      {/* Logo */}
       <div className="logo">
-           <img src={logo} alt="BONC Logo" height="50" />
+        <img src={logo} alt="BONC Logo" height="50" />
       </div>
 
+      {/* Hamburger / Close Icon */}
       <div className="menu-icon" onClick={() => setMenuOpen(!menuOpen)}>
-        {menuOpen ? "open" : ""}
+        {menuOpen ? "✖" : "☰"}
       </div>
 
+      {/* Navigation Links */}
       <ul className={`nav-links ${menuOpen ? "active" : ""}`}>
         <li><a href="#">Dashboard</a></li>
         <li><a href="#">Request</a></li>
@@ -26,6 +28,7 @@ const Navbar = () => {
         <li><a href="#">Need Help?</a></li>
       </ul>
 
+      {/* Notification + Profile */}
       <div className="icons">
         <div className="bell">
           <span className="dot"></span>
