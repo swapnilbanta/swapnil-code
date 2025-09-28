@@ -41,6 +41,7 @@ export const getSimilarProducts = () => {
     { id: 3, name: "Food", category: "Accessories", image: product5 },
      { id: 4, name: "Jeans", category: "Clothing", image: product3 },
         { id: 5, name: "Jeans", category: "Clothing", image: product2},
+         { id: 6, name: "Jeans", category: "Clothing", image: product1},
            
   ]);
 };
