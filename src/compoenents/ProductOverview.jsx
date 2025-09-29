@@ -27,9 +27,6 @@ const ProductOverview = () => {
     <div className="container">
         <Breadcrumb/>
       <div className="product-header">
-
-
-
         <ProductGallery images={product.images} />
         <ProductDetails product={product} />
       </div>

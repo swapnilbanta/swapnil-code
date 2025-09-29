@@ -12,7 +12,6 @@ body {
   padding: 20px;
 }
 
-/* ---------- PRODUCT HEADER ---------- */
 .product-header {
   display: flex;
   gap: 20px;
@@ -53,13 +52,16 @@ body {
   border: 2px solid #007bff;
 }
 
+/* ✅ Selected image fix */
 .main-image img {
-  width: 350px;
-  height: 350px;
+  width: 400px;   /* medium width */
+  height: 400px;  /* medium height */
   object-fit: contain;
-  border-radius: 6px;
+  border-radius: 10px;
   background: #f9f9f9;
+
 }
+
 
 .details {
   flex: 1;
@@ -186,7 +188,6 @@ body {
 .sellers {
   margin-top: 40px;
   height: 100%;
-  
 }
 
 .sellers h3 {
