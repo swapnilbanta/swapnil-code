@@ -213,6 +213,8 @@ export const getAllProductsAndServices = async () => {
       }),
     });
 
+    console.log(response);
+
     const raw = await response.text();
 
     if (!response.ok) {
