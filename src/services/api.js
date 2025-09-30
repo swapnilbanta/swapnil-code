@@ -200,7 +200,7 @@ export const getAllProductsAndServices = async () => {
       },
       body: JSON.stringify({
         PageNo: 1,
-        PageSize: 10,
+        PageSize: 20,
       }),
     });
 
