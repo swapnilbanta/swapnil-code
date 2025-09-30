@@ -12,6 +12,7 @@ import  seller1 from "../assets/seller1.png";
 import  seller2 from "../assets/seller2.png";
 import  seller3 from "../assets/seller3.png";
 import  seller4 from "../assets/seller4.png";
+
 export const getProductDetails = () => {
   return Promise.resolve({
     name: "Button-Down Shirt",
