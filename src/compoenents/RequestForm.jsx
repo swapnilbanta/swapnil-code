@@ -140,14 +140,10 @@ const inquiryPayload = {
   ProductName: formData.productName,
 };
 
-
-  console.log("➡️ Final inquiry payload:", JSON.stringify(inquiryPayload, null, 2));
-
   try {
     setLoading(true);
-    const res = await createInquiry(inquiryPayload); // 🚀 send flat payload
+    const res = await createInquiry(inquiryPayload); 
     alert("✅ Inquiry created successfully!");
-    console.log("Inquiry Response:", res);
 
     // Reset form
     setFormData({

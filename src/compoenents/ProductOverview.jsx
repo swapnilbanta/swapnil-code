@@ -8,6 +8,7 @@ import Header from "./Header";
 import Breadcrumb from "./Breadcrumb";
 
 
+
 const ProductOverview = () => {
   const [product, setProduct] = useState(null);
   const [similar, setSimilar] = useState([]);
@@ -18,6 +19,9 @@ const ProductOverview = () => {
     getSimilarProducts().then(setSimilar);
     getSellers().then(setSellers);
   }, []);
+
+
+
 
   if (!product) return <p>Loading...</p>;
 

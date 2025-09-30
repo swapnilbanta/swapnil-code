@@ -26,14 +26,12 @@ export const autoLogin = async () => {
 
     if (token) {
       localStorage.setItem("authToken", token);
-      console.log("Token saved successfully ✅");
     } else {
       console.warn("No AuthToken in response");
     }
 
     if (UserRowId) {
       localStorage.setItem("UserRowId", UserRowId);
-      console.log("UserRowId saved successfully ✅");
     } else {
       console.warn("No UserRowId in response");
     }
@@ -164,7 +162,6 @@ export const getAllSubCategoryByCategory = async (categoryId) => {
 
 
 export const createInquiry = async (inquiryData) => {
-  console.log("📤 Sending inquiry data:", inquiryData);
   try {
     const token = localStorage.getItem("authToken");
     if (!token) throw new Error("No AuthToken found. Please login first.");
@@ -197,15 +194,15 @@ export const createInquiry = async (inquiryData) => {
 
 export const getAllProductsAndServices = async () => {
   try {
-      const token = localStorage.getItem("authToken");
+    const token = localStorage.getItem("authToken");
     if (!token) throw new Error("No AuthToken found. Please login first.");
 
     const response = await fetch("http://142.93.215.17/api/ProductsAndServices/getAllProductsAndServices", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        accept: "text/plain", // match curl first
-          Authorization: `Bearer ${token}`
+        accept: "application/json",
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
         PageNo: 1,
@@ -213,20 +210,29 @@ export const getAllProductsAndServices = async () => {
       }),
     });
 
-    console.log(response);
-
     const raw = await response.text();
 
     if (!response.ok) {
       throw new Error(`HTTP ${response.status} → ${raw}`);
     }
 
-    // parse if JSON
+    let data;
     try {
-      return JSON.parse(raw);
-    } catch {
+      data = JSON.parse(raw);
+    } catch (err) {
+      console.error("❌ JSON parse failed", err);
       return raw;
     }
+
+    // 👉 Save only the first ProductsAndServicesId
+    if (data?.Data && Array.isArray(data.Data) && data.Data.length > 0) {
+      const firstId = data.Data[2].ProductsAndServicesId;
+      localStorage.setItem("ProductsAndServicesId", firstId);
+    } else {
+      console.warn("⚠️ No Data found in response:", data);
+    }
+
+    return data;
   } catch (err) {
     console.error("❌ getAllProductsAndServices failed", err);
     throw err;
@@ -237,28 +243,17 @@ export const getAllProductsAndServices = async () => {
 
 
 // Add better token validation
-export const getProductsAndServicesDetail = async (productsAndServicesId) => {
+export const getProductsAndServicesDetail = async () => {
   try {
     const token = localStorage.getItem("authToken");
-    console.log("🔑 Token exists:", !!token);
+        const productId  = localStorage.getItem("ProductsAndServicesId");
     
     if (!token) {
       throw new Error("No AuthToken found. Please login first.");
     }
 
-    if (!productsAndServicesId) {
-      throw new Error("Product/Service ID is required");
-    }
-
-    // Validate UUID format (basic check)
-    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-    if (!uuidRegex.test(productsAndServicesId)) {
-      throw new Error("Invalid Product/Service ID format. Expected UUID.");
-    }
-
-    const url = `http://142.93.215.17/api/ProductsAndServices/getProductsAndServicesDetail?productsAndServicesId=${encodeURIComponent(productsAndServicesId)}`;
+    const url = `http://142.93.215.17/api/ProductsAndServices/getProductsAndServicesDetail?productsAndServicesId=${encodeURIComponent(productId)}`;
     
-    console.log("🌐 API URL:", url);
 
     const response = await fetch(url, {
       method: "GET",
@@ -269,11 +264,8 @@ export const getProductsAndServicesDetail = async (productsAndServicesId) => {
       },
     });
 
-    console.log("📡 Response status:", response.status);
-    console.log("📡 Response ok:", response.ok);
 
     const raw = await response.text();
-    console.log("🔎 Raw response:", raw);
 
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}: ${raw}`);
@@ -282,7 +274,6 @@ export const getProductsAndServicesDetail = async (productsAndServicesId) => {
     // Handle both JSON and plain text responses
     if (raw.trim().startsWith('{') || raw.trim().startsWith('[')) {
       const parsedData = JSON.parse(raw);
-      console.log("✅ Parsed data:", parsedData);
       return parsedData;
     } else {
       console.warn("API returned non-JSON response:", raw);
@@ -317,7 +308,6 @@ export const getAllProductsAndServicesByUser  = async () => {
     });
 
     const raw = await response.text();
-    console.log(raw);
 
     if (!response.ok) {
       throw new Error(`HTTP ${response.status} → ${raw}`);
