@@ -21,13 +21,21 @@ export const autoLogin = async () => {
     }
 
     const data = await response.json();
-     const token = data?.Data?.AuthToken;
+    const token = data?.Data?.AuthToken;
+    const UserRowId = data?.Data?.UserRowId;
 
     if (token) {
-      localStorage.setItem("authToken",token);
+      localStorage.setItem("authToken", token);
       console.log("Token saved successfully ✅");
     } else {
       console.warn("No AuthToken in response");
+    }
+
+    if (UserRowId) {
+      localStorage.setItem("UserRowId", UserRowId);
+      console.log("UserRowId saved successfully ✅");
+    } else {
+      console.warn("No UserRowId in response");
     }
 
     return data;
@@ -36,6 +44,7 @@ export const autoLogin = async () => {
     throw err;
   }
 };
+
 
 export const getAllIndustry = async () => {
   try {

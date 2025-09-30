@@ -9,6 +9,7 @@ import {
 } from "../services/api";
 
 export default function RequestForm() {
+   const userRowId = localStorage.getItem("UserRowId");
   const [formData, setFormData] = useState({
     requestType: "", // Information / Quotation / Proposal
     productName: "",
@@ -118,18 +119,13 @@ const handleSubmit = async (e) => {
     alert(`Please fill in all required fields: ${missingFields.join(", ")}`);
     return;
   }
-
-  const generateUUID = () => crypto.randomUUID();
 const inquiryPayload = {
-  InquiriesId: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
   EntityType: formData.type === "products" ? "products" : "services",
   RequestType: formData.requestType || "Information",
   CategoryId: formData.category || "3fa85f64-5717-4562-b3fc-2c963f66afa6",
   SubCategoryId: formData.subCategory || "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-  CompanyId: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-  ProductsAndServicesId: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-  UserRowId: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-  RequestingBusinessId: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  UserRowId: userRowId,
+  RequestingBusinessId: null,
   Country: formData.country || "",
   State: formData.state || "",
   City: formData.city || "",
@@ -141,10 +137,7 @@ const inquiryPayload = {
   AdditionalDetails: formData.technicalDetails || "",
   Description: formData.description || "",
   Status: "Open",
-  InquiriesUniqueId: generateUUID(),
-  CustomerService: "swapnil",
   ProductName: formData.productName,
-  ReferanceId: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
 };
 
 
