@@ -1,5 +1,5 @@
 // ✅ Load environment variables from Vite
-const BASE_URL = import.meta.env.VITE_BASE_URL;
+const BASE_URL = "http://142.93.215.17";
 const EMAIL = import.meta.env.VITE_EMAIL;
 const PASSWORD = import.meta.env.VITE_PASSWORD;
 
