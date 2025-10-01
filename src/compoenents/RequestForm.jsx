@@ -7,9 +7,11 @@ import {
   getAllSubCategoryByCategory,
   createInquiry,
 } from "../services/api";
+import { getNames } from "country-list";   // ✅ Import country-list
 
 export default function RequestForm() {
-   const userRowId = localStorage.getItem("UserRowId");
+  const userRowId = localStorage.getItem("UserRowId");
+
   const [formData, setFormData] = useState({
     requestType: "", // Information / Quotation / Proposal
     productName: "",
@@ -33,6 +35,12 @@ export default function RequestForm() {
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  // ✅ Fetch all countries (once)
+  const [countries, setCountries] = useState([]);
+  useEffect(() => {
+    setCountries(getNames()); // getNames() gives array of country names
+  }, []);
 
   // 🔹 Fetch industries on mount
   useEffect(() => {
@@ -88,8 +96,8 @@ export default function RequestForm() {
   // 🔹 Handle Other Inputs
   const handleChange = (e) => {
     const { name, value, files, type } = e.target;
-    
-    if (type === 'file') {
+
+    if (type === "file") {
       setFormData({
         ...formData,
         [name]: files ? files[0] : null,
@@ -102,79 +110,73 @@ export default function RequestForm() {
     }
   };
 
+  // 🔹 Submit Inquiry
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
+    const requiredFields = ["requestType", "productName", "industry"];
+    const missingFields = requiredFields.filter((field) => !formData[field]);
 
-  // 🔹 Submit Inquiry - FIXED PAYLOAD
-// 🔹 Submit Inquiry - FIXED PAYLOAD
-// 🔹 Submit Inquiry
-// 🔹 Submit Inquiry - CORRECTED PAYLOAD
-// 🔹 Submit Inquiry - Correct Payload
-const handleSubmit = async (e) => {
-  e.preventDefault();
+    if (missingFields.length > 0) {
+      alert(`Please fill in all required fields: ${missingFields.join(", ")}`);
+      return;
+    }
 
-  const requiredFields = ["requestType", "productName", "industry"];
-  const missingFields = requiredFields.filter((field) => !formData[field]);
+    const inquiryPayload = {
+      EntityType: formData.type === "products" ? "products" : "services",
+      RequestType: formData.requestType || "Information",
+      CategoryId: formData.category || "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      SubCategoryId: formData.subCategory || "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      UserRowId: userRowId,
+      RequestingBusinessId: null,
+      Country: formData.country || "",
+      State: formData.state || "",
+      City: formData.city || "",
+      Pincode: formData.pinCode || "",
+      Quantity: Number(formData.quantity) || 0,
+      Value: Number(formData.value) || 0,
+      Units: Number(formData.units) || 0,
+      ImagePath: formData.image ? formData.image.name : "",
+      AdditionalDetails: formData.technicalDetails || "",
+      Description: formData.description || "",
+      Status: "Open",
+      ProductName: formData.productName,
+    };
 
-  if (missingFields.length > 0) {
-    alert(`Please fill in all required fields: ${missingFields.join(", ")}`);
-    return;
-  }
-const inquiryPayload = {
-  EntityType: formData.type === "products" ? "products" : "services",
-  RequestType: formData.requestType || "Information",
-  CategoryId: formData.category || "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-  SubCategoryId: formData.subCategory || "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-  UserRowId: userRowId,
-  RequestingBusinessId: null,
-  Country: formData.country || "",
-  State: formData.state || "",
-  City: formData.city || "",
-  Pincode: formData.pinCode || "",
-  Quantity: Number(formData.quantity) || 0,
-  Value: Number(formData.value) || 0,
-  Units: Number(formData.units) || 0,
-  ImagePath: formData.image ? formData.image.name : "",
-  AdditionalDetails: formData.technicalDetails || "",
-  Description: formData.description || "",
-  Status: "Open",
-  ProductName: formData.productName,
-};
+    try {
+      setLoading(true);
+      const res = await createInquiry(inquiryPayload);
+      alert("✅ Inquiry created successfully!");
 
-  try {
-    setLoading(true);
-    const res = await createInquiry(inquiryPayload); 
-    alert("✅ Inquiry created successfully!");
+      // Reset form
+      setFormData({
+        requestType: "",
+        productName: "",
+        industry: "",
+        category: "",
+        subCategory: "",
+        country: "",
+        state: "",
+        city: "",
+        pinCode: "",
+        quantity: "",
+        value: "",
+        units: "",
+        image: null,
+        technicalDetails: "",
+        description: "",
+        type: "products",
+      });
 
-    // Reset form
-    setFormData({
-      requestType: "",
-      productName: "",
-      industry: "",
-      category: "",
-      subCategory: "",
-      country: "",
-      state: "",
-      city: "",
-      pinCode: "",
-      quantity: "",
-      value: "",
-      units: "",
-      image: null,
-      technicalDetails: "",
-      description: "",
-      type: "products",
-    });
-
-    setCategories([]);
-    setSubCategories([]);
-  } catch (err) {
-    console.error("❌ Failed to create inquiry:", err);
-    alert(`Failed to submit inquiry: ${err.message}`);
-  } finally {
-    setLoading(false);
-  }
-};
-
+      setCategories([]);
+      setSubCategories([]);
+    } catch (err) {
+      console.error("❌ Failed to create inquiry:", err);
+      alert(`Failed to submit inquiry: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="form-container">
@@ -210,9 +212,9 @@ const inquiryPayload = {
           {/* Request Type */}
           <div>
             <label>Request Type *</label>
-            <select 
-              name="requestType" 
-              value={formData.requestType} 
+            <select
+              name="requestType"
+              value={formData.requestType}
               onChange={handleChange}
               required
             >
@@ -239,9 +241,9 @@ const inquiryPayload = {
           {/* Industry */}
           <div>
             <label>Industry *</label>
-            <select 
-              name="industry" 
-              value={formData.industry} 
+            <select
+              name="industry"
+              value={formData.industry}
               onChange={handleIndustryChange}
               required
             >
@@ -257,9 +259,9 @@ const inquiryPayload = {
           {/* Category */}
           <div>
             <label>Categories</label>
-            <select 
-              name="category" 
-              value={formData.category} 
+            <select
+              name="category"
+              value={formData.category}
               onChange={handleCategoryChange}
               disabled={!formData.industry}
             >
@@ -275,9 +277,9 @@ const inquiryPayload = {
           {/* Sub-Category */}
           <div>
             <label>Sub-Categories</label>
-            <select 
-              name="subCategory" 
-              value={formData.subCategory} 
+            <select
+              name="subCategory"
+              value={formData.subCategory}
               onChange={handleChange}
               disabled={!formData.category}
             >
@@ -290,14 +292,20 @@ const inquiryPayload = {
             </select>
           </div>
 
-          {/* Country */}
+          {/* Country ✅ Updated */}
           <div>
             <label>Country</label>
-            <select name="country" value={formData.country} onChange={handleChange}>
+            <select
+              name="country"
+              value={formData.country}
+              onChange={handleChange}
+            >
               <option value="">Select your country</option>
-              <option value="USA">USA</option>
-              <option value="India">India</option>
-              <option value="UK">UK</option>
+              {countries.map((c) => (
+                <option key={c} value={c}>
+                  {c}
+                </option>
+              ))}
             </select>
           </div>
 
@@ -379,9 +387,9 @@ const inquiryPayload = {
           {/* Upload Image */}
           <div>
             <label>Upload Image</label>
-            <input 
-              type="file" 
-              name="image" 
+            <input
+              type="file"
+              name="image"
               onChange={handleChange}
               accept="image/*"
             />
@@ -416,9 +424,11 @@ const inquiryPayload = {
         </div>
 
         {/* Submit */}
-        <button type="submit" disabled={loading}>
-          {loading ? "Submitting..." : "Submit Request"}
-        </button>
+        <div className="form-actions">
+          <button type="submit" disabled={loading}>
+            {loading ? "Submitting..." : "Submit Request"}
+          </button>
+        </div>
       </form>
     </div>
   );
