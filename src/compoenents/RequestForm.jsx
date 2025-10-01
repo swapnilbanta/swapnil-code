@@ -111,72 +111,74 @@ export default function RequestForm() {
   };
 
   // 🔹 Submit Inquiry
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+ // 🔹 Submit Inquiry
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    const requiredFields = ["requestType", "productName", "industry"];
-    const missingFields = requiredFields.filter((field) => !formData[field]);
+  const requiredFields = ["requestType", "productName", "industry"];
+  const missingFields = requiredFields.filter((field) => !formData[field]);
 
-    if (missingFields.length > 0) {
-      alert(`Please fill in all required fields: ${missingFields.join(", ")}`);
-      return;
-    }
+  if (missingFields.length > 0) {
+    alert(`Please fill in all required fields: ${missingFields.join(", ")}`);
+    return;
+  }
 
-    const inquiryPayload = {
-      EntityType: formData.type === "products" ? "products" : "services",
-      RequestType: formData.requestType || "Information",
-      CategoryId: formData.category || "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-      SubCategoryId: formData.subCategory || "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-      UserRowId: userRowId,
-      RequestingBusinessId: null,
-      Country: formData.country || "",
-      State: formData.state || "",
-      City: formData.city || "",
-      Pincode: formData.pinCode || "",
-      Quantity: Number(formData.quantity) || 0,
-      Value: Number(formData.value) || 0,
-      Units: Number(formData.units) || 0,
-      ImagePath: formData.image ? formData.image.name : "",
-      AdditionalDetails: formData.technicalDetails || "",
-      Description: formData.description || "",
-      Status: "Open",
-      ProductName: formData.productName,
-    };
-
-    try {
-      setLoading(true);
-      const res = await createInquiry(inquiryPayload);
-      alert("✅ Inquiry created successfully!");
-
-      // Reset form
-      setFormData({
-        requestType: "",
-        productName: "",
-        industry: "",
-        category: "",
-        subCategory: "",
-        country: "",
-        state: "",
-        city: "",
-        pinCode: "",
-        quantity: "",
-        value: "",
-        units: "",
-        image: null,
-        technicalDetails: "",
-        description: "",
-        type: "products",
-      });
-
-      setCategories([]);
-      setSubCategories([]);
-    } catch (err) {
-      console.error("❌ Failed to create inquiry:", err);
-      alert(`Failed to submit inquiry: ${err.message}`);
-    } finally {
-      setLoading(false);
-    }
+  const inquiryPayload = {
+    EntityType: formData.type === "products" ? "products" : "services",
+    RequestType: formData.requestType || "Information",
+    CategoryId: formData.category ||  "3fa85f64",      
+    SubCategoryId: formData.subCategory ||  "3fa85f64", 
+    UserRowId: userRowId,
+    RequestingBusinessId: null,
+    Country: formData.country || "",
+    State: formData.state || "",
+    City: formData.city || "",
+    Pincode: formData.pinCode || "",
+    Quantity: Number(formData.quantity) || 0,
+    Value: Number(formData.value) || 0,
+    Units: Number(formData.units) || 0,
+    ImagePath: formData.image ? formData.image.name : "",
+    AdditionalDetails: formData.technicalDetails || "",
+    Description: formData.description || "",
+    Status: "Open",
+    ProductName: formData.productName,
   };
+
+  try {
+    setLoading(true);
+    const res = await createInquiry(inquiryPayload);
+    alert("✅ Inquiry created successfully!");
+
+    // Reset form
+    setFormData({
+      requestType: "",
+      productName: "",
+      industry: "",
+      category: "",
+      subCategory: "",
+      country: "",
+      state: "",
+      city: "",
+      pinCode: "",
+      quantity: "",
+      value: "",
+      units: "",
+      image: null,
+      technicalDetails: "",
+      description: "",
+      type: "products",
+    });
+
+    setCategories([]);
+    setSubCategories([]);
+  } catch (err) {
+    console.error("❌ Failed to create inquiry:", err);
+    alert(`Failed to submit inquiry: ${err.message}`);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <div className="form-container">
@@ -273,8 +275,6 @@ export default function RequestForm() {
               ))}
             </select>
           </div>
-
-          {/* Sub-Category */}
           <div>
             <label>Sub-Categories</label>
             <select
@@ -283,7 +283,7 @@ export default function RequestForm() {
               onChange={handleChange}
               disabled={!formData.category}
             >
-              <option value="">Select sub segment type</option>
+              <option value="null">Select sub segment type</option>
               {subCategories.map((sub) => (
                 <option key={sub.SubCategoryId} value={sub.SubCategoryId}>
                   {sub.SubCategoryName}

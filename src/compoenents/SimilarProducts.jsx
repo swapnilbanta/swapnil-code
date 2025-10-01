@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { getAllProductsAndServices } from "../services/api"; // adjust path
+import { getAllProductsAndServices } from "../services/api";
 
-const SimilarProducts = () => {
+const SimilarProducts = ({ res }) => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -21,32 +21,42 @@ const SimilarProducts = () => {
     ],
   };
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const data = await getAllProductsAndServices();
+  // 🔹 Normalizer so both API and props look the same
+  const mapProducts = (list) =>
+    list.map((p) => ({
+      id: p.ProductsAndServicesId || p.id,
+      name: p.ProductsAndServicesName || p.name || "Unnamed Product",
+      image:
+        p.Media?.length > 0
+          ? `http://142.93.215.17${p.Media[0].MediaPath}`
+          : p.image || "/placeholder.png",
+      category: p.CategoryName || p.category || "Uncategorized",
+    }));
 
-        if (data?.Data && Array.isArray(data.Data)) {
-          const mapped = data.Data.map((p) => ({
-            id: p.ProductsAndServicesId,
-            name: p.ProductsAndServicesName || "Unnamed Product",
-            image:
-              p.Media && p.Media.length > 0
-                ? `http://142.93.215.17${p.Media[0].MediaPath}`
-                : "/placeholder.png",
-            category: p.CategoryName || "Uncategorized",
-          }));
-          setItems(mapped);
-        }
-      } catch (error) {
-        console.error("❌ Failed to fetch products:", error);
-      } finally {
-        setLoading(false);
+  // 🔹 Fallback API load
+  const loadAllProducts = async () => {
+    try {
+      const data = await getAllProductsAndServices();
+      if (data?.Data && Array.isArray(data.Data)) {
+        setItems(mapProducts(data.Data));
       }
-    };
+    } catch (err) {
+      console.error("❌ Failed to fetch products:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    fetchProducts();
-  }, []);
+  useEffect(() => {
+    if (res && res.length > 0) {
+      // ✅ If props present → use them directly
+      setItems(mapProducts(res));
+      setLoading(false);
+    } else {
+      // ✅ Otherwise load from API
+      loadAllProducts();
+    }
+  }, [res]);
 
   if (loading) return <p>Loading products...</p>;
 

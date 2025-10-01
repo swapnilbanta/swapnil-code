@@ -1,5 +1,8 @@
+// ProductGallery.js
 import React, { useEffect, useState } from "react";
 import { getProductsAndServicesDetail } from "../services/api";
+
+const BASE_URL = "http://142.93.215.17";
 
 const ProductGallery = () => {
   const [selected, setSelected] = useState(null);
@@ -10,7 +13,9 @@ const ProductGallery = () => {
     const fetchData = async () => {
       try {
         const res = await getProductsAndServicesDetail();
+        console.log("swapnil banta");
         console.log("res full object:", JSON.stringify(res, null, 2));
+        console.log("swapnil banta");
 
         if (res?.Success && res?.Data) {
           setProduct(res.Data);
@@ -31,25 +36,43 @@ const ProductGallery = () => {
   if (!product) return <p>Loading...</p>;
 
   return (
-    <div className="gallery">
-      <div className="thumbnails">
+    <div className="gallery" style={{ display: "flex", gap: "20px" }}>
+      {/* Thumbnail List */}
+      <div className="thumbnails" style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
         {product.Media?.map((media, idx) => (
           <img
             key={idx}
-            src={`http://142.93.215.17${media.MediaPath}`} // ✅ prepend base URL
+            src={`${BASE_URL}${media.MediaPath}`} // ✅ prepend base URL
             alt={media.ActualFileName || "thumb"}
             className={`thumb ${selected === media.MediaPath ? "active" : ""}`}
             onClick={() => setSelected(media.MediaPath)}
+            style={{
+              width: "80px",
+              height: "80px",
+              objectFit: "contain",
+              border: selected === media.MediaPath ? "2px solid blue" : "1px solid #ccc",
+              borderRadius: "6px",
+              cursor: "pointer",
+              background: "#fff"
+            }}
           />
         ))}
       </div>
 
-      <div className="main-image">
+      {/* Main Image */}
+      <div className="main-image" style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
         {selected ? (
           <img
-            src={`http://142.93.215.17${selected}`}
+            src={`${BASE_URL}${selected}`}
             alt="main"
-            style={{ width: "400px", height: "auto" }}
+            style={{
+              width: "400px",
+              height: "auto",
+              objectFit: "contain",
+              borderRadius: "10px",
+              background: "#f9f9f9",
+              padding: "10px"
+            }}
           />
         ) : (
           <p>No Image Available</p>

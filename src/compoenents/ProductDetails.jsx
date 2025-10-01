@@ -10,10 +10,7 @@ const ProductDetails = () => {
     // ✅ Fetch product details from backend
     const fetchData = async () => {
       try {
-        const res = await getProductsAndServicesDetail();
-        console.log("swapnil banta ---------");
-        console.log("res full object:", JSON.stringify(res, null, 2));
-        console.log("swapnil banta ---------");
+         const res = await getProductsAndServicesDetail();
 
         if (res?.Success && res?.Data) {
           setProduct(res.Data); // store product data

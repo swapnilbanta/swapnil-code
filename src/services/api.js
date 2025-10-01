@@ -42,9 +42,6 @@ const apiRequest = async (endpoint, { method = "POST", body = null, auth = true 
   }
 };
 
-// ------------------------------------------------------
-// 🔹 API Functions
-// ------------------------------------------------------
 
 export const autoLogin = async () => {
   const response = await fetch(`${BASE_URL}/api/userService/login`, {
@@ -119,12 +116,12 @@ export const createInquiry = (inquiryData) =>
 // 🔹 Get All Products & Services
 export const getAllProductsAndServices = async () => {
   const data = await apiRequest("/api/ProductsAndServices/getAllProductsAndServices", {
-    body: { PageNo: 1, PageSize: 20 },
+    body: { PageNo: 1, PageSize: 40 },
   });
 
   // Save first productId in localStorage
   if (data?.Data?.length > 0) {
-    localStorage.setItem("ProductsAndServicesId", data.Data[0].ProductsAndServicesId);
+    localStorage.setItem("ProductsAndServicesId", data.Data[3].ProductsAndServicesId);
   }
 
   return data;
@@ -135,20 +132,24 @@ export const getProductsAndServicesDetail = async () => {
   const productId = localStorage.getItem("ProductsAndServicesId");
   if (!productId) throw new Error("No ProductsAndServicesId found in localStorage.");
 
-  return apiRequest(
+  const response = await apiRequest(
     `/api/ProductsAndServices/getProductsAndServicesDetail?productsAndServicesId=${encodeURIComponent(
       productId
     )}`,
     { method: "GET" }
   );
+
+  console.log("📦 Product Details Response:", response); // ✅ log here
+  return response;
 };
 
+
 // 🔹 Get All Products/Services By User
-export const getAllProductsAndServicesByUser = () =>
+export const getAllProductsAndServicesByUser = (searchText) =>
   apiRequest("/api/ProductsAndServices/getAllProductsAndServicesByUser", {
     body: {
       PageNo: 1,
       PageSize: 20,
-      SearchText: "Laptop",
+      SearchText: searchText || "",
     },
   });
