@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import "../common/ContactForm.css"; // Import CSS
+import React, { useState, useEffect } from "react";
+import "../common/ContactForm.css";
+import { autoLogin } from "../services/api"; // import your login api
 
 export default function ContactForm() {
   const [formData, setFormData] = useState({
@@ -9,14 +10,41 @@ export default function ContactForm() {
     email: "",
   });
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
+  // 🔹 Run login once & bind data into form
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const res = await autoLogin();
+
+        if (res?.Data) {
+          const firstName = res.Data.FirstName || "";
+          const middleName = res.Data.MiddleName ? ` ${res.Data.MiddleName}` : "";
+          const lastName = res.Data.LastName ? ` ${res.Data.LastName}` : "";
+          const businessId = res.Data.BusinessId || "";
+          const companyName = res.Data.CompanyName || "";
+
+          setFormData({
+            fullName: `${firstName}${middleName}${lastName}`.trim(),
+            // ✅ Company name with BusinessId
+            companyName: businessId
+              ? `${companyName} (ID: ${businessId})`
+              : companyName,
+            phoneNumber: res.Data.PhoneNumber || "",
+            email: res.Data.EmailId || "",
+          });
+        }
+      } catch (error) {
+        console.error("AutoLogin failed:", error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Form Data Submitted:", formData);
+    console.log("Form Submitted:", formData);
+    // ✅ you can call createInquiry(formData) here
   };
 
   return (
@@ -31,8 +59,8 @@ export default function ContactForm() {
               type="text"
               name="fullName"
               value={formData.fullName}
-              onChange={handleChange}
               placeholder="Enter full name"
+              readOnly
             />
           </div>
 
@@ -42,8 +70,8 @@ export default function ContactForm() {
               type="text"
               name="companyName"
               value={formData.companyName}
-              onChange={handleChange}
               placeholder="Enter company name"
+              readOnly
             />
           </div>
 
@@ -53,8 +81,8 @@ export default function ContactForm() {
               type="text"
               name="phoneNumber"
               value={formData.phoneNumber}
-              onChange={handleChange}
               placeholder="+91 1234567890"
+              readOnly
             />
           </div>
 
@@ -64,14 +92,10 @@ export default function ContactForm() {
               type="email"
               name="email"
               value={formData.email}
-              onChange={handleChange}
               placeholder="example@gmail.com"
+              readOnly
             />
           </div>
-        </div>
-
-        <div className="form-actions">
-          <button type="submit">Submit Request</button>
         </div>
       </form>
     </div>

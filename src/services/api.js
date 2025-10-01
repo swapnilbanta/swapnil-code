@@ -59,6 +59,7 @@ export const autoLogin = async () => {
   if (!response.ok) throw new Error(`Login failed: ${response.status}`);
 
   const data = await response.json();
+
   const token = data?.Data?.AuthToken;
   const userRowId = data?.Data?.UserRowId;
 
@@ -138,8 +139,6 @@ export const getProductsAndServicesDetail = async () => {
     )}`,
     { method: "GET" }
   );
-
-  console.log("📦 Product Details Response:", response); // ✅ log here
   return response;
 };
 

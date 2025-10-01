@@ -7,7 +7,7 @@ import {
   getAllSubCategoryByCategory,
   createInquiry,
 } from "../services/api";
-import { getNames } from "country-list";   
+import { Country, State, City } from "country-state-city"; // ✅ For country-state-city data
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -38,10 +38,18 @@ export default function RequestForm() {
   const [subCategories, setSubCategories] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // ✅ Fetch all countries
+  // ✅ For country → state → city
   const [countries, setCountries] = useState([]);
+  const [states, setStates] = useState([]);
+  const [cities, setCities] = useState([]);
+
+  // ✅ For image preview
+  const [previewImage, setPreviewImage] = useState(null);
+
+  // Fetch all countries
   useEffect(() => {
-    setCountries(getNames());
+    const allCountries = Country.getAllCountries();
+    setCountries(allCountries);
   }, []);
 
   // 🔹 Fetch industries on mount
@@ -95,15 +103,45 @@ export default function RequestForm() {
     }
   };
 
-  // 🔹 Handle Other Inputs
+  // 🔹 Handle Country Change
+  const handleCountryChange = (e) => {
+    const countryCode = e.target.value;
+    setFormData({ ...formData, country: countryCode, state: "", city: "" });
+
+    const stateList = State.getStatesOfCountry(countryCode);
+    setStates(stateList);
+    setCities([]);
+  };
+
+  // 🔹 Handle State Change
+  const handleStateChange = (e) => {
+    const stateCode = e.target.value;
+    setFormData({ ...formData, state: stateCode, city: "" });
+
+    const cityList = City.getCitiesOfState(formData.country, stateCode);
+    setCities(cityList);
+  };
+
+  // 🔹 Handle Inputs (including file preview)
   const handleChange = (e) => {
     const { name, value, files, type } = e.target;
 
     if (type === "file") {
+      const file = files ? files[0] : null;
       setFormData({
         ...formData,
-        [name]: files ? files[0] : null,
+        [name]: file,
       });
+
+      if (file) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setPreviewImage(reader.result);
+        };
+        reader.readAsDataURL(file);
+      } else {
+        setPreviewImage(null);
+      }
     } else {
       setFormData({
         ...formData,
@@ -173,9 +211,11 @@ export default function RequestForm() {
         description: "",
         type: "products",
       });
-
       setCategories([]);
       setSubCategories([]);
+      setStates([]);
+      setCities([]);
+      setPreviewImage(null);
     } catch (err) {
       console.error("❌ Failed to create inquiry:", err);
       toast.error(`❌ Failed to submit inquiry: ${err.message}`, {
@@ -311,12 +351,12 @@ export default function RequestForm() {
             <select
               name="country"
               value={formData.country}
-              onChange={handleChange}
+              onChange={handleCountryChange}
             >
               <option value="">Select your country</option>
               {countries.map((c) => (
-                <option key={c} value={c}>
-                  {c}
+                <option key={c.isoCode} value={c.isoCode}>
+                  {c.name}
                 </option>
               ))}
             </select>
@@ -325,25 +365,37 @@ export default function RequestForm() {
           {/* State */}
           <div>
             <label>State / Province</label>
-            <input
-              type="text"
+            <select
               name="state"
               value={formData.state}
-              placeholder="Enter state"
-              onChange={handleChange}
-            />
+              onChange={handleStateChange}
+              disabled={!formData.country}
+            >
+              <option value="">Select state</option>
+              {states.map((s) => (
+                <option key={s.isoCode} value={s.isoCode}>
+                  {s.name}
+                </option>
+              ))}
+            </select>
           </div>
 
           {/* City */}
           <div>
             <label>City</label>
-            <input
-              type="text"
+            <select
               name="city"
               value={formData.city}
-              placeholder="Enter location"
               onChange={handleChange}
-            />
+              disabled={!formData.state}
+            >
+              <option value="">Select city</option>
+              {cities.map((c) => (
+                <option key={c.name} value={c.name}>
+                  {c.name}
+                </option>
+              ))}
+            </select>
           </div>
 
           {/* Pin Code */}
@@ -406,8 +458,14 @@ export default function RequestForm() {
               onChange={handleChange}
               accept="image/*"
             />
-            {formData.image && (
-              <small>Selected: {formData.image.name}</small>
+            {previewImage && (
+              <div>
+                <img
+                  src={previewImage}
+                  alt="Preview"
+                  style={{ width: "120px", marginTop: "10px", borderRadius: "8px" }}
+                />
+              </div>
             )}
           </div>
         </div>
