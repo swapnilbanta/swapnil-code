@@ -7,13 +7,15 @@ import {
   getAllSubCategoryByCategory,
   createInquiry,
 } from "../services/api";
-import { getNames } from "country-list";   // ✅ Import country-list
+import { getNames } from "country-list";   
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function RequestForm() {
   const userRowId = localStorage.getItem("UserRowId");
 
   const [formData, setFormData] = useState({
-    requestType: "", // Information / Quotation / Proposal
+    requestType: "",
     productName: "",
     industry: "",
     category: "",
@@ -28,7 +30,7 @@ export default function RequestForm() {
     image: null,
     technicalDetails: "",
     description: "",
-    type: "products", // products or services
+    type: "products",
   });
 
   const [industries, setIndustries] = useState([]);
@@ -36,10 +38,10 @@ export default function RequestForm() {
   const [subCategories, setSubCategories] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // ✅ Fetch all countries (once)
+  // ✅ Fetch all countries
   const [countries, setCountries] = useState([]);
   useEffect(() => {
-    setCountries(getNames()); // getNames() gives array of country names
+    setCountries(getNames());
   }, []);
 
   // 🔹 Fetch industries on mount
@@ -111,77 +113,85 @@ export default function RequestForm() {
   };
 
   // 🔹 Submit Inquiry
- // 🔹 Submit Inquiry
-const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  const requiredFields = ["requestType", "productName", "industry"];
-  const missingFields = requiredFields.filter((field) => !formData[field]);
+    const requiredFields = ["requestType", "productName", "industry"];
+    const missingFields = requiredFields.filter((field) => !formData[field]);
 
-  if (missingFields.length > 0) {
-    alert(`Please fill in all required fields: ${missingFields.join(", ")}`);
-    return;
-  }
+    if (missingFields.length > 0) {
+      toast.warn(`⚠️ Please fill in required fields: ${missingFields.join(", ")}`);
+      return;
+    }
 
-  const inquiryPayload = {
-    EntityType: formData.type === "products" ? "products" : "services",
-    RequestType: formData.requestType || "Information",
-    CategoryId: formData.category ||  "3fa85f64",      
-    SubCategoryId: formData.subCategory ||  "3fa85f64", 
-    UserRowId: userRowId,
-    RequestingBusinessId: null,
-    Country: formData.country || "",
-    State: formData.state || "",
-    City: formData.city || "",
-    Pincode: formData.pinCode || "",
-    Quantity: Number(formData.quantity) || 0,
-    Value: Number(formData.value) || 0,
-    Units: Number(formData.units) || 0,
-    ImagePath: formData.image ? formData.image.name : "",
-    AdditionalDetails: formData.technicalDetails || "",
-    Description: formData.description || "",
-    Status: "Open",
-    ProductName: formData.productName,
+    const inquiryPayload = {
+      EntityType: formData.type === "products" ? "products" : "services",
+      RequestType: formData.requestType || "Information",
+      CategoryId: formData.category || "3fa85f64",
+      SubCategoryId: formData.subCategory || "3fa85f64",
+      UserRowId: userRowId,
+      RequestingBusinessId: null,
+      Country: formData.country || "",
+      State: formData.state || "",
+      City: formData.city || "",
+      Pincode: formData.pinCode || "",
+      Quantity: Number(formData.quantity) || 0,
+      Value: Number(formData.value) || 0,
+      Units: Number(formData.units) || 0,
+      ImagePath: formData.image ? formData.image.name : "",
+      AdditionalDetails: formData.technicalDetails || "",
+      Description: formData.description || "",
+      Status: "Open",
+      ProductName: formData.productName,
+    };
+
+    try {
+      setLoading(true);
+      await createInquiry(inquiryPayload);
+
+      toast.success("✅ Inquiry created successfully!", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+
+      // Reset form
+      setFormData({
+        requestType: "",
+        productName: "",
+        industry: "",
+        category: "",
+        subCategory: "",
+        country: "",
+        state: "",
+        city: "",
+        pinCode: "",
+        quantity: "",
+        value: "",
+        units: "",
+        image: null,
+        technicalDetails: "",
+        description: "",
+        type: "products",
+      });
+
+      setCategories([]);
+      setSubCategories([]);
+    } catch (err) {
+      console.error("❌ Failed to create inquiry:", err);
+      toast.error(`❌ Failed to submit inquiry: ${err.message}`, {
+        position: "top-right",
+        autoClose: 4000,
+      });
+    } finally {
+      setLoading(false);
+    }
   };
-
-  try {
-    setLoading(true);
-    const res = await createInquiry(inquiryPayload);
-    alert("✅ Inquiry created successfully!");
-
-    // Reset form
-    setFormData({
-      requestType: "",
-      productName: "",
-      industry: "",
-      category: "",
-      subCategory: "",
-      country: "",
-      state: "",
-      city: "",
-      pinCode: "",
-      quantity: "",
-      value: "",
-      units: "",
-      image: null,
-      technicalDetails: "",
-      description: "",
-      type: "products",
-    });
-
-    setCategories([]);
-    setSubCategories([]);
-  } catch (err) {
-    console.error("❌ Failed to create inquiry:", err);
-    alert(`Failed to submit inquiry: ${err.message}`);
-  } finally {
-    setLoading(false);
-  }
-};
-
 
   return (
     <div className="form-container">
+      {/* ✅ Toast Container */}
+      <ToastContainer />
+
       <h2>Request for Information / Quotation / Proposal</h2>
       <p>Choose your request type and provide your details.</p>
 
@@ -209,6 +219,7 @@ const handleSubmit = async (e) => {
         </label>
       </div>
 
+      {/* Form */}
       <form className="request-form" onSubmit={handleSubmit}>
         <div className="form-grid">
           {/* Request Type */}
@@ -275,6 +286,8 @@ const handleSubmit = async (e) => {
               ))}
             </select>
           </div>
+
+          {/* Sub Category */}
           <div>
             <label>Sub-Categories</label>
             <select
@@ -283,7 +296,7 @@ const handleSubmit = async (e) => {
               onChange={handleChange}
               disabled={!formData.category}
             >
-              <option value="null">Select sub segment type</option>
+              <option value="">Select sub segment type</option>
               {subCategories.map((sub) => (
                 <option key={sub.SubCategoryId} value={sub.SubCategoryId}>
                   {sub.SubCategoryName}
@@ -292,7 +305,7 @@ const handleSubmit = async (e) => {
             </select>
           </div>
 
-          {/* Country ✅ Updated */}
+          {/* Country */}
           <div>
             <label>Country</label>
             <select
