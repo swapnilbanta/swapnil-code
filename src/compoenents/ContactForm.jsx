@@ -43,8 +43,6 @@ export default function ContactForm() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Form Submitted:", formData);
-    // ✅ you can call createInquiry(formData) here
   };
 
   return (

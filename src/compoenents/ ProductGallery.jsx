@@ -13,9 +13,6 @@ const ProductGallery = () => {
     const fetchData = async () => {
       try {
         const res = await getProductsAndServicesDetail();
-        console.log("swapnil banta");
-        console.log("res full object:", JSON.stringify(res, null, 2));
-        console.log("swapnil banta");
 
         if (res?.Success && res?.Data) {
           setProduct(res.Data);

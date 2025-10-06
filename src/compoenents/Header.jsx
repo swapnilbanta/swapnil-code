@@ -17,7 +17,6 @@ const Header = () => {
 
     try {
       const res = await getAllProductsAndServicesByUser(searchQuery);
-      console.log("🔍 Search Results:", res);
 
       const data = res?.Data || [];
       setResults(data); // ✅ update state

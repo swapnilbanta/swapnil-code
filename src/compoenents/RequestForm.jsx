@@ -1,13 +1,14 @@
 // RequestForm.js
 import React, { useState, useEffect } from "react";
 import "../common/RequestForm.css";
+import Select from "react-select";
 import {
   getAllIndustry,
   getAllCategoryByIndustry,
   getAllSubCategoryByCategory,
   createInquiry,
 } from "../services/api";
-import { Country, State, City } from "country-state-city"; // ✅ For country-state-city data
+import { Country, State, City } from "country-state-city"; 
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -46,13 +47,11 @@ export default function RequestForm() {
   // ✅ For image preview
   const [previewImage, setPreviewImage] = useState(null);
 
-  // Fetch all countries
   useEffect(() => {
     const allCountries = Country.getAllCountries();
     setCountries(allCountries);
   }, []);
 
-  // 🔹 Fetch industries on mount
   useEffect(() => {
     async function fetchIndustries() {
       try {
@@ -229,9 +228,7 @@ export default function RequestForm() {
 
   return (
     <div className="form-container">
-      {/* ✅ Toast Container */}
       <ToastContainer />
-
       <h2>Request for Information / Quotation / Proposal</h2>
       <p>Choose your request type and provide your details.</p>
 
@@ -259,7 +256,6 @@ export default function RequestForm() {
         </label>
       </div>
 
-      {/* Form */}
       <form className="request-form" onSubmit={handleSubmit}>
         <div className="form-grid">
           {/* Request Type */}
@@ -291,58 +287,69 @@ export default function RequestForm() {
             />
           </div>
 
-          {/* Industry */}
+          {/* Industry - with Search */}
           <div>
             <label>Industry *</label>
-            <select
-              name="industry"
-              value={formData.industry}
-              onChange={handleIndustryChange}
-              required
-            >
-              <option value="">Select Industry</option>
-              {industries.map((ind) => (
-                <option key={ind.IndustryId} value={ind.IndustryId}>
-                  {ind.IndustryName}
-                </option>
-              ))}
-            </select>
+            <Select
+              options={industries.map((ind) => ({
+                value: ind.IndustryId,
+                label: ind.IndustryName,
+              }))}
+              value={
+                industries
+                  .map((ind) => ({ value: ind.IndustryId, label: ind.IndustryName }))
+                  .find((opt) => opt.value === formData.industry) || null
+              }
+              onChange={(selected) => {
+                handleIndustryChange({ target: { value: selected ? selected.value : "" } });
+              }}
+              placeholder="Search or select industry"
+              isClearable
+            />
           </div>
 
-          {/* Category */}
+          {/* Category - with Search */}
           <div>
             <label>Categories</label>
-            <select
-              name="category"
-              value={formData.category}
-              onChange={handleCategoryChange}
-              disabled={!formData.industry}
-            >
-              <option value="">Select your Segment</option>
-              {categories.map((cat) => (
-                <option key={cat.CategoryId} value={cat.CategoryId}>
-                  {cat.CategoryName}
-                </option>
-              ))}
-            </select>
+            <Select
+              options={categories.map((cat) => ({
+                value: cat.CategoryId,
+                label: cat.CategoryName,
+              }))}
+              value={
+                categories
+                  .map((cat) => ({ value: cat.CategoryId, label: cat.CategoryName }))
+                  .find((opt) => opt.value === formData.category) || null
+              }
+              onChange={(selected) => {
+                handleCategoryChange({ target: { value: selected ? selected.value : "" } });
+              }}
+              placeholder="Search or select category"
+              isClearable
+              isDisabled={!formData.industry}
+            />
           </div>
 
-          {/* Sub Category */}
+          {/* Sub Category - with Search */}
           <div>
             <label>Sub-Categories</label>
-            <select
-              name="subCategory"
-              value={formData.subCategory}
-              onChange={handleChange}
-              disabled={!formData.category}
-            >
-              <option value="">Select sub segment type</option>
-              {subCategories.map((sub) => (
-                <option key={sub.SubCategoryId} value={sub.SubCategoryId}>
-                  {sub.SubCategoryName}
-                </option>
-              ))}
-            </select>
+            <Select
+              options={subCategories.map((sub) => ({
+                value: sub.SubCategoryId,
+                label: sub.SubCategoryName,
+              }))}
+              value={
+                subCategories
+                  .map((sub) => ({ value: sub.SubCategoryId, label: sub.SubCategoryName }))
+                  .find((opt) => opt.value === formData.subCategory) || null
+              }
+              onChange={(selected) => {
+                setFormData({ ...formData, subCategory: selected ? selected.value : "" });
+              }}
+              placeholder="Search or select sub category"
+              isClearable
+              isDisabled={!formData.category}
+            />
           </div>
 
           {/* Country */}
@@ -494,7 +501,6 @@ export default function RequestForm() {
           />
         </div>
 
-        {/* Submit */}
         <div className="form-actions">
           <button type="submit" disabled={loading}>
             {loading ? "Submitting..." : "Submit Request"}
